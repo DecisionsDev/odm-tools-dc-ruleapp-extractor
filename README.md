@@ -34,6 +34,8 @@ Then run:
 
 `ant [required params] download` to execute the extraction
 
+Note the value of the "redeploy" flag within the code, which specifies if a new deployment baseline should be created or if we should redeploy an existing one.
+
 
 License Information
 ====================
