@@ -4,13 +4,12 @@
 
     <description>ODM Decision Center XOM extractor</description>
 
-<!--     <property name="url" value="http://localhost:8080/teamserver"/> -->
-    <property name="url" value="http://9.128.102.194:8080/teamserver"/>
+    <property name="url" value="http://localhost:8080/teamserver"/>
     <property name="datasource" value="jdbc/ilogDataSource"/>
     <property name="user" value="rtsAdmin"/>
     <property name="password" value="rtsAdmin"/>
     <property name="project" value="AutoQuote"/>
-    <property name="baseline" value="main"/>
+    <property name="baseline" value="foo"/>
     <property name="deploymentConfigName" value="Deployment to QA env"/>
     <property name="filepath" value="/Users/gmolines/Documents/PA/bizops/odm-tools-dc-ruleapp-extractor/"/>
 
