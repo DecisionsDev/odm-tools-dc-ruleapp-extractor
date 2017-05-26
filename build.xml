@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project basedir="." default="usage">
+
+    <description>ODM Decision Center XOM extractor</description>
+
+<!--     <property name="url" value="http://localhost:8080/teamserver"/> -->
+    <property name="url" value="http://9.128.102.194:8080/teamserver"/>
+    <property name="datasource" value="jdbc/ilogDataSource"/>
+    <property name="user" value="rtsAdmin"/>
+    <property name="password" value="rtsAdmin"/>
+    <property name="project" value="AutoQuote"/>
+    <property name="baseline" value="main"/>
+    <property name="deploymentConfigName" value="Deployment to QA env"/>
+    <property name="filepath" value="/Users/gmolines/Documents/PA/bizops/odm-tools-dc-ruleapp-extractor/"/>
+
+    <property name="teamserver.home" value="/Users/gmolines/IBM/ODM881/teamserver"/>
+    <import file="${teamserver.home}/lib/classpath-teamserver.xml"/>
+
+    <property name="src.dir" location="${basedir}/src"/>
+    <property name="classes.dir" location="${basedir}/build"/>
+    <property name="lib.dir" location="${basedir}/lib"/>
+
+    <!-- sample classpath -->
+    <path id="sample.classpath">
+        <pathelement location="${classes.dir}"/>
+        <pathelement location="${lib.dir}/commons-cli-1.3.jar"/>
+        <path refid="teamserver.classpath"/>
+    </path>
+
+    <!-- usage -->
+    <target name="usage">
+        <echo message="Targets:"/>
+        <echo message="* ant build : compilation"/>
+        <echo message="* ant clean : remove classes and output directories"/>
+        <echo message="* ant -Durl=DCurl -Dproject=MyProject ... run"/>
+        <echo message="      command: the operation to run, download or upload"/>
+        <echo message="      url: the Decision Center URL"/>
+        <echo message="      datasource: the datasource used by Decision Center"/>
+        <echo message="      user: the user login"/>
+        <echo message="      password: the user password"/>
+        <echo message="      project: the project from which to extract the XOM"/>
+        <echo message="      baseline: the name of the baseline (branch) from which to extract the RuleApp"/>
+        <echo message="      deploymentConfigName: the name of the Deployment Configuration to extract"/>
+        <echo message="      filepath: the name of a local directory to which the extracted RuleApp will be saved"/>
+    </target>
+
+    <!-- build -->
+    <target name="build">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}"
+               destdir="${classes.dir}"
+               classpathref="sample.classpath"
+               debug="on"
+               deprecation="on"
+               includeantruntime="false"
+               fork="true"/>
+    </target>
+
+    <!-- clean -->
+    <target name="clean">
+        <delete dir="${classes.dir}"/>
+    </target>
+
+    <!-- download -->
+    <target name="download" depends="build">
+        <java classname="com.ibm.rules.sample.RuleAppExtractor" classpathref="sample.classpath" fork="true" failonerror="true" dir=".">
+            <arg line="-command download -url ${url} -datasource ${datasource} -user ${user} -password ${password} -project ${project} -baseline ${baseline} -deploymentConfigName ${deploymentConfigName} -filepath ${filepath}"/>
+        </java>
+    </target>
+
+</project>
