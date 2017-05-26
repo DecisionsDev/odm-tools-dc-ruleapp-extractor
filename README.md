@@ -1,18 +1,15 @@
 Introduction
 ==============
-Since 8.8.1, you can  benefit from the new "XOM deployment in Decision Center" feature, as explained here:
-https://www.ibm.com/support/knowledgecenter/SSQP76_8.8.1/com.ibm.odm.dcenter.deploy/topics/con_deploy_xom.html
+This project shows how to extract the RuleApp of a specific Decision Service from Decision Center.
 
-If you choose to do so, Decision Center includes both the XOM and the RuleApp upon deployment.
+The IlrDeploymentFacility interface exposes a deployDSRuleAppArchive API, which does in fact two things:
+- it generates the RuleApp of a Decision Service and returns it
+- and it deploys it to the list of specified RES servers.
 
-If you choose to implement an offline deployment strategy, driven by the API calls, you need a convenient way to access the XOM as well as the RuleApp.
-
-Generating a RuleApp on disk, for example, to be able to publish it to a binary artifact repository such as Nexus, Artifactory or Code Station, can easily be achieved through the IlrDeploymentFacility of Decision Center, by using the deployDSRuleAppArchive as documented here:
-https://www.ibm.com/support/knowledgecenter/SSQP76_8.8.1/com.ibm.odm.dcenter.ref.dc/html/api/html/ilog/rules/teamserver/model/IlrDeploymentFacility.html
-
-However, downloading a copy of the XOM that was used to generate said RuleApp requires using several APIs in sequence. This asset shows how to achieve this.
-
-Moreover, this asset demonstrates how to upload a XOM, so that you can replace the existing one by a version you would have compiled with your toolchain, so that you are sure that the rule artifacts get generated with the exact same xom that was produced by your compilation chain.
+If this API is called with an empty server list, then it can be used to retrieve the RuleApp locally.
+This is very useful when implementing a DevOps pipeline in which you want an offline deployment strategy.
+With the [odm-tools-dc-xom-extractor](https://git.ng.bluemix.net/guilhem.molines/odm-tools-dc-xom-extractor) you can get the XOM supporting the RuleApp, and with this project, you can get the RuleApp.
+These two elements can then be published to a binary artifact repository such as Nexus, Artifactory or Code Station, where they can be picked up by an automated deployment process of your choice.
 
 
 Software Prerequisites
@@ -37,9 +34,7 @@ Then run:
 
 `ant [required params] download` to execute the extraction
 
-`ant [required params] upload` to execute the upload
-
 
 License Information
 ====================
-This project is licensed as specified in this [file](https://hub.jazz.net/project/gmolines/dc-xom-extractor/overview#https://hub.jazz.net/git/gmolines%252Fdc-xom-extractor/contents/master/IBMLicense.txt)
+This project is licensed as specified in this [file](https://git.ng.bluemix.net/guilhem.molines/odm-tools-dc-ruleapp-extractor/blob/master/IBMLicense.txt)
