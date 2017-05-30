@@ -81,11 +81,11 @@ public class RuleAppExtractor {
 	}
 	
 	public void downloadRuleApp(String url, String datasource, String user, String password,
-			String project, String baselineName, String deploymentConfigName, String filePath) {
+			String project, String baselineName, String deploymentConfigName, String filePath, String redeploy, String snapshotName) {
 
         IlrSessionFactory factory = new IlrRemoteSessionFactory();
         IlrSession session = null;
-        boolean reDeploy = false;
+        boolean reDeploy = "true".equalsIgnoreCase(redeploy) ? true : false;
 
         try {
 			// connect to Decision Center
@@ -97,13 +97,14 @@ public class RuleAppExtractor {
             session.setWorkingBaseline(baseline);
 
 			// Get the deployment configuration
+			System.out.println("Getting deployment: " + deploymentConfigName);
             IlrDeployment deployment = (IlrDeployment) IlrSessionHelper
 					.getElementFromPath(session, deploymentConfigName, IlrPackageKind.DEPLOYMENT_LITERAL);
 			HashMap<String, String> rulesetsVersionsMap =  new HashMap<String, String>();
 			
 			// Generate the Decision Service archive. The 2nd param as an empty list prevents deployment on any RES
 			List<IlrServer> servers = new ArrayList<IlrServer>();
-			IlrArchiveOutput output = session.deployDSRuleAppArchive(deployment, servers, baselineName,
+			IlrArchiveOutput output = session.deployDSRuleAppArchive(deployment, servers, snapshotName,
 					reDeploy, rulesetsVersionsMap);
 			Iterator<IlrElementError> it = output.getCheckingErrors().iterator();
 			// if no error, write the file to disk
@@ -135,47 +136,6 @@ public class RuleAppExtractor {
         }
 
     }
-
-	public void uploadXOM(String url, String datasource, String user, String password, String project, String baselineName, String xomName, String filePath) {
-
-        IlrSessionFactory factory = new IlrRemoteSessionFactory();
-        IlrSession session = null;
-
-        try {
-
-			// connect to Decision Center
-            factory.connect(user, password, url, datasource);
-            session = factory.getSession();
-            session.beginUsage();
-
-            IlrBaseline baseline = findBaseline(session, url, datasource, user, password, project, baselineName);
-            session.setWorkingBaseline(baseline);
-
-            IlrResource xom = findXOM(session, xomName);
-            IlrBrmPackage brm = session.getBrmPackage(); // BR Model package, to get meta data from
-
-            // reads the new XOM from disk
-            if (xom != null) {
-                Path path = Paths.get(filePath);
-                byte[] xomBytes = Files.readAllBytes(path);
-                // store this new files in the resource
-                xom.setRawValue(brm.getResource_Body(), xomBytes);
-                // and commits this to Decision Center
-                session.commit(xom);
-                System.err.format("Read file: '%s' %n", filePath);
-            } else {
-                System.err.format("XOM not found: '%s' %n", xomName);
-            }
-
-        } catch (IlrConnectException | IlrApplicationException | IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (session != null) {
-                session.endUsage();
-            }
-        }
-
-    }
 	
     public static void main(String args[]) {
 
@@ -187,9 +147,11 @@ public class RuleAppExtractor {
         Option user = Option.builder("user").hasArg().argName("user").required().desc("User name").build();
         Option password = Option.builder("password").hasArg().argName("password").required().desc("User password").build();
         Option project = Option.builder("project").hasArg().argName("project").required().desc("Project name").build();
-        Option baseline = Option.builder("baseline").hasArg().argName("baseline").desc("Baseline (current if not provided)").build();
+        Option baseline = Option.builder("baseline").hasArg().argName("baseline").desc("Baseline to deploy (current if not provided)").build();
         Option deploymentConfigName = Option.builder("deploymentConfigName").hasArg().argName("deploymentConfigName").required().desc("Deployment Config name").build();
         Option filepath = Option.builder("filepath").hasArg().argName("filepath").required().desc("Output file path").build();
+        Option redeploy = Option.builder("redeploy").hasArg().argName("redeploy").required().desc("Redeploy flag").build();
+        Option snapshotName = Option.builder("snapshotName").hasArg().argName("snapshotName").required().desc("Name of the deployed snapshot, or of the existing snapshot for a redeploy").build();
 
         options.addOption(command);
         options.addOption(url);
@@ -200,6 +162,8 @@ public class RuleAppExtractor {
         options.addOption(baseline);
         options.addOption(deploymentConfigName);
         options.addOption(filepath);
+        options.addOption(redeploy);
+        options.addOption(snapshotName);
 
         CommandLineParser parser = new DefaultParser();
         RuleAppExtractor raExtractor = new RuleAppExtractor();
@@ -215,7 +179,9 @@ public class RuleAppExtractor {
 	                    cmd.getOptionValue("project"),
 	                    cmd.getOptionValue("baseline"),
 	                    cmd.getOptionValue("deploymentConfigName"),
-	                    cmd.getOptionValue("filepath")
+	                    cmd.getOptionValue("filepath"),
+	                    cmd.getOptionValue("redeploy"),
+	                    cmd.getOptionValue("snapshotName")
 	            );
             }
 

@@ -9,9 +9,11 @@
     <property name="user" value="rtsAdmin"/>
     <property name="password" value="rtsAdmin"/>
     <property name="project" value="AutoQuote"/>
-    <property name="baseline" value="foo"/>
-    <property name="deploymentConfigName" value="Deployment to QA env"/>
+    <property name="baseline" value="%current_key"/>
+    <property name="deploymentConfigName" value="Deployment_to_QA_env"/>
     <property name="filepath" value="/Users/gmolines/Documents/PA/bizops/odm-tools-dc-ruleapp-extractor/"/>
+    <property name="redeploy" value="false"/>
+    <property name="snapshotName" value="myDeploymentSnapshot"/>
 
     <property name="teamserver.home" value="/Users/gmolines/IBM/ODM881/teamserver"/>
     <import file="${teamserver.home}/lib/classpath-teamserver.xml"/>
@@ -42,6 +44,8 @@
         <echo message="      baseline: the name of the baseline (branch) from which to extract the RuleApp"/>
         <echo message="      deploymentConfigName: the name of the Deployment Configuration to extract"/>
         <echo message="      filepath: the name of a local directory to which the extracted RuleApp will be saved"/>
+        <echo message="      redeploy: true if you want to redeploy an existing snapshot"/>
+        <echo message="      snapshotName: Name you want to give to the deployed snapshot (or name of the existing snapshot for a re-deploy"/>
     </target>
 
     <!-- build -->
@@ -64,7 +68,7 @@
     <!-- download -->
     <target name="download" depends="build">
         <java classname="com.ibm.rules.sample.RuleAppExtractor" classpathref="sample.classpath" fork="true" failonerror="true" dir=".">
-            <arg line="-command download -url ${url} -datasource ${datasource} -user ${user} -password ${password} -project ${project} -baseline ${baseline} -deploymentConfigName ${deploymentConfigName} -filepath ${filepath}"/>
+            <arg line="-command download -url ${url} -datasource ${datasource} -user ${user} -password ${password} -project ${project} -baseline ${baseline} -deploymentConfigName ${deploymentConfigName} -filepath ${filepath} -redeploy ${redeploy} -snapshotName ${snapshotName} "/>
         </java>
     </target>
 
