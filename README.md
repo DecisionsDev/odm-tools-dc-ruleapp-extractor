@@ -2,7 +2,7 @@ Introduction
 ==============
 This project shows how to extract the RuleApp of a specific Decision Service from Decision Center.
 
-The IlrDeploymentFacility interface exposes a deployDSRuleAppArchive API, which does in fact two things:
+The `IlrDeploymentFacility` interface exposes a `deployDSRuleAppArchive` API, which does in fact two things:
 - it generates the RuleApp of a Decision Service and returns it
 - and it deploys it to the list of specified RES servers.
 
@@ -30,7 +30,7 @@ Then run:
 
 `ant usage` to discover the command line argument
 
-`ant compile` to compile the java class
+`ant build` to compile the java class
 
 `ant [required params] download` to execute the extraction
 
