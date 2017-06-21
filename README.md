@@ -36,6 +36,9 @@ Then run:
 
 Note the value of the "redeploy" flag within the code, which specifies if a new deployment baseline should be created or if we should redeploy an existing one.
 
+Third Parties
+====================
+- [Apache Commons CLI 1.3](https://commons.apache.org/proper/commons-cli/index.html)
 
 License Information
 ====================
