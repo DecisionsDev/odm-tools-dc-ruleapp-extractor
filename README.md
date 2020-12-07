@@ -14,7 +14,7 @@ The `IlrDeploymentFacility` interface exposes a `deployDSRuleAppArchive` API, wh
 
 If this API is called with an empty server list, then it can be used to retrieve the RuleApp locally.
 This is very useful when implementing a DevOps pipeline in which you want an offline deployment strategy.
-With the [odm-tools-dc-xom-extractor](https://git.ng.bluemix.net/guilhem.molines/odm-tools-dc-xom-extractor) you can get the XOM supporting the RuleApp, and with this project, you can get the RuleApp.
+With the [odm-tools-dc-xom-extractor](https://github.com/ODMDev/odm-tools-dc-xom-extractor) you can get the XOM supporting the RuleApp, and with this project, you can get the RuleApp.
 These two elements can then be published to a binary artifact repository such as Nexus, Artifactory or Code Station, where they can be picked up by an automated deployment process of your choice.
 
 
